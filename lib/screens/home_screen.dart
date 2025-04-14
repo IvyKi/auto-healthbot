@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 30),
               _buildBottomMenu(),
             ],
           ),
@@ -127,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // bottom
   Widget _buildBottomMenu() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
