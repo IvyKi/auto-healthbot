@@ -31,10 +31,9 @@ class SplashScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 300,),
 
                 Text(
-                  '화면을 터치하여 시작하세요',
+                  '화면을 터치하세요',
                   style: TextStyle(
                     fontSize: 128,
                     color: Colors.white,

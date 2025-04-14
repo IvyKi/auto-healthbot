@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Health Bot App',
         theme: ThemeData(
-          fontFamily: 'Pretendard', // << 전체 시스템 기본 폰트 지정
+          fontFamily: 'NotoSansKR', // << 전체 시스템 기본 폰트 지정
           textTheme: ThemeData.light().textTheme.copyWith(
             bodyMedium: TextStyle(fontSize: 16),
             titleLarge: TextStyle(fontWeight: FontWeight.bold),
