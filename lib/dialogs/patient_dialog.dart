@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PatientLookupDialog extends StatefulWidget {
   final Function(String patientId) onConfirm;
@@ -20,29 +21,39 @@ class _PatientLookupDialogState extends State<PatientLookupDialog> {
       title: Text(
         '환자 조회',
         style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+        textAlign: TextAlign.center,
       ),
       content: SizedBox(
-        width: 620,
-        height: 350,
+        width: 580,
+        height: 280,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 70,),
-
-            Text('고유번호를 입력하세요.', style: TextStyle(fontSize: 36)),
-            const SizedBox(height: 12),
-            TextField(
-              onChanged: (value) {
-                setState(() {
-                  _input = value;
-                });
-              },
-              decoration: InputDecoration(
-                border: UnderlineInputBorder(),
-                isDense: true,
+            SizedBox(
+              width: 300,
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _input = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: '고유번호를 입력하세요',
+                  hintStyle: TextStyle(fontSize: 20, color: Colors.grey[500]),
+                  border: UnderlineInputBorder(),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                ),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 36),
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(8)
+                ],
               ),
-              style: TextStyle(fontSize: 18),
-            ),
+            )
           ],
         ),
       ),
