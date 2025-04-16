@@ -1,11 +1,17 @@
+// home_screen.dart
+
 import 'package:auto_healthbot/helper/dialog_helper.dart';
+import 'package:auto_healthbot/widgets/home_button.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../services/patient_service.dart';
+import '../widgets/bottom_menu.dart';
 import 'splash_screen.dart';
 import 'package:auto_healthbot/theme/app_color.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -43,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: _resetInactivityTimer,
       onPanDown: (_) => _resetInactivityTimer(),
 
-      // UI
+      // home screen UI
       child: Scaffold(
         backgroundColor: AppColor.back,
         body: Padding(
@@ -53,111 +59,38 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildFixedSizeButton(
+                  HomeButton(
                     labelTop: 'Daily',
                     labelBottom: '건강 체크',
                     color: AppColor.blue,
+                    textColor: AppColor.back,
+
+                    // Daily 건강 체크 로직의 시작
                     onTap: () {
+                      // dialog ui
                       showPatientLookupDialog(context, (patientId){
+                        // dialog 환자 id 조회
                         fetchPatientInfo(context, patientId);
                       });
                     },
                   ),
-                  _buildFixedSizeButton(
+                  HomeButton(
                     labelTop: '목적지',
                     labelBottom: '안내하기',
                     color: AppColor.green,
+                    textColor: AppColor.back,
                     onTap: () {},
                   ),
                 ],
               ),
               const SizedBox(height: 10),
-              _buildBottomMenu(),
+
+              // 하단 바 메뉴
+              BottomMenu(),
             ],
           ),
         ),
-
       ),
-    );
-  }
-
-  // 메인 2 기능 버튼 박스
-  Widget _buildFixedSizeButton({
-    required String labelTop,
-    required String labelBottom,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return SizedBox(
-      width: 520,
-      height: 578,
-      child: Material(
-        color: color,
-        borderRadius: BorderRadius.circular(20),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(20),
-          onTap: onTap,
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (labelTop.isNotEmpty)
-                  Text(
-                    labelTop,
-                    style: TextStyle(
-                      fontSize: 80,
-                      fontWeight: FontWeight.bold,
-                      color: AppColor.back,
-                    ),
-                  ),
-                Text(
-                  labelBottom,
-                  style: TextStyle(
-                    fontSize: 80,
-                    fontWeight: FontWeight.bold,
-                    color: AppColor.back,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-
-
-
-
-
-
-
-  // bottom
-  Widget _buildBottomMenu() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _iconWithLabel(Icons.language, '다국어지원'),
-          _iconWithLabel(Icons.settings, '관리자 모드'),
-          _iconWithLabel(Icons.music_note_outlined, 'TTS ON/OFF'),
-        ],
-      ),
-    );
-  }
-
-  Widget _iconWithLabel(IconData icon, String label) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: Colors.black, size: 60),
-
-        SizedBox(width: 10,),
-        Text(label, style: TextStyle(color: Colors.black, fontSize: 40)),
-      ],
     );
   }
 }

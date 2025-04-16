@@ -1,3 +1,8 @@
+// patient_service.dart
+// Daily 건강 체크 로직 1. 환자 id 조회하기
+// 현재 어떤 숫자를 입력하던 2초 뒤 dialog 종료 (25.04.16)
+// TODO: http 파이프라인 뚫기
+
 import 'package:flutter/material.dart';
 
 Future<void> fetchPatientInfo(BuildContext context, id) async {
