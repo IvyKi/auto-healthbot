@@ -1,6 +1,7 @@
+import 'package:auto_healthbot/helper/dialog_helper.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import '../dialogs/patient_dialog.dart';
+import '../services/patient_service.dart';
 import 'splash_screen.dart';
 import 'package:auto_healthbot/theme/app_color.dart';
 
@@ -57,7 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     labelBottom: '건강 체크',
                     color: AppColor.blue,
                     onTap: () {
-                      _showPatientDialog();
+                      showPatientLookupDialog(context, (patientId){
+                        fetchPatientInfo(context, patientId);
+                      });
                     },
                   ),
                   _buildFixedSizeButton(
@@ -124,34 +127,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // 환자 고유번호 조회 dialog
-  void _showPatientDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => PatientLookupDialog(
-        onConfirm: (patientId) {
-          _fetchPatientInfo(patientId); // 또는 다음 단계 화면 전환
-        },
-      ),
-    );
-  }
 
-  void _fetchPatientInfo(String id) async {
-    // 로딩 띄우기
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Center(child: CircularProgressIndicator()),
-    );
 
-    await Future.delayed(Duration(seconds: 2)); // 예시 대기
 
-    Navigator.pop(context); // 로딩 닫기
-
-    // 실제 검증 및 화면 전환 처리
-    // Navigator.push(...);
-  }
 
 
 
