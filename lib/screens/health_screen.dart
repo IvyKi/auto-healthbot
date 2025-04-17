@@ -1,3 +1,4 @@
+import 'package:auto_healthbot/screens/sensor1.dart';
 import 'package:auto_healthbot/theme/app_color.dart';
 import 'package:auto_healthbot/widgets/health_chart.dart';
 import 'package:auto_healthbot/widgets/record_card.dart';
@@ -40,7 +41,12 @@ class HealthScreen extends StatelessWidget {
                         width: 550,
                         height: 175,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const Sensor1()),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorChart.blue,
                             shape: RoundedRectangleBorder(
