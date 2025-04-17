@@ -41,7 +41,7 @@ class HomeButton extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 80,
                       fontWeight: FontWeight.bold,
-                      color: AppColor.back,
+                      color: ColorChart.back,
                     ),
                   ),
                 Text(
@@ -49,7 +49,7 @@ class HomeButton extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 80,
                     fontWeight: FontWeight.bold,
-                    color: AppColor.back,
+                    color: ColorChart.back,
                   ),
                   textAlign: TextAlign.center,
                 ),

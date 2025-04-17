@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _resetInactivityTimer() {
     _inactivityTimer?.cancel();
-    _inactivityTimer = Timer(Duration(seconds: 15), _goToSplashScreen);
+    _inactivityTimer = Timer(Duration(seconds: 30), _goToSplashScreen);
   }
 
   void _goToSplashScreen() {
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       // home screen UI
       child: Scaffold(
-        backgroundColor: AppColor.back,
+        backgroundColor: ColorChart.back,
         body: Padding(
           padding: const EdgeInsets.only(top: 80, left: 80, right: 80),
           child: Column(
@@ -62,8 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   HomeButton(
                     labelTop: 'Daily',
                     labelBottom: '건강 체크',
-                    color: AppColor.blue,
-                    textColor: AppColor.back,
+                    color: ColorChart.blue,
+                    textColor: ColorChart.back,
 
                     // Daily 건강 체크 로직의 시작
                     onTap: () {
@@ -77,8 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   HomeButton(
                     labelTop: '목적지',
                     labelBottom: '안내하기',
-                    color: AppColor.green,
-                    textColor: AppColor.back,
+                    color: Gradients1.color3,
+                    textColor: ColorChart.back,
                     onTap: () {},
                   ),
                 ],
