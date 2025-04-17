@@ -1,4 +1,6 @@
 import 'package:auto_healthbot/theme/app_color.dart';
+import 'package:auto_healthbot/widgets/health_chart.dart';
+import 'package:auto_healthbot/widgets/record_card.dart';
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 
@@ -29,7 +31,7 @@ class HealthScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Center(
-                          child: _buildChart(score: latestScore),
+                          child: HealthChart(score: latestScore),
                         ),
                       ),
 
@@ -77,7 +79,7 @@ class HealthScreen extends StatelessWidget {
                             itemCount: records.length.clamp(0, 10),
                             itemBuilder: (context, index) {
                               final record = records[index];
-                              return _recordCard(
+                              return RecordCard(
                                 date: record['date']!,
                                 score: record['score']!,
                                 issue: record['issue']!,
@@ -135,81 +137,8 @@ class HealthScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChart({required int score}) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        SizedBox(
-          width: 420,
-          height: 420,
-          child: Transform(
-            alignment: Alignment.center,
-            transform: Matrix4.rotationY(3.1416),
-            child: CircularProgressIndicator(
-              value: score / 100,
-              strokeWidth: 70,
-              backgroundColor: ColorChart.back,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                getHealthColor(score)
-              ),
-            ),
-          ),
-        ),
-        Text(
-          '건강 점수\n${score}점',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontSize: 60,
-              fontWeight: FontWeight.w700,
-              color: getHealthColor(score)
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _recordCard({
-    required String date,
-    required int score,
-    required String issue,
-  }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: getHealthColor(score),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(date, style: const TextStyle(fontSize: 24)),
-          Text('건강점수: $score점', style: const TextStyle(fontSize: 24)),
-          Text('주요 이슈: $issue', style: const TextStyle(fontSize: 24)),
-        ],
-      ),
-    );
-  }
 
 
-  Color getHealthColor(int score) {
-    if (score <= 30) {
-      return ColorChart.red; // 빨강
-    } else if (score <= 60) {
-      return ColorChart.orange; // 주황
-    } else if (score <= 80) {
-      return ColorChart.green; // 초록
-    } else {
-      return ColorChart.blue; // 파랑
-    }
-  }
 
   List<Map<String, dynamic>> _getMockRecords() {
     return [
