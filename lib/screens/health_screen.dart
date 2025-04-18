@@ -39,7 +39,7 @@ class HealthScreen extends StatelessWidget {
 
                       SizedBox(
                         width: 550,
-                        height: 175,
+                        height: 160,
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.push(

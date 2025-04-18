@@ -14,8 +14,9 @@ class _Sensor1State extends State<Sensor1> {
   @override
   void initState() {
     super.initState();
-    // 2초 후 자동으로 다음 화면으로 이동 (센서 인식 가정)
+    // 5초 후 자동으로 다음 화면으로 이동 (센서 인식 가정)
     Future.delayed(const Duration(seconds: 5), () {
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const Sensor2()),

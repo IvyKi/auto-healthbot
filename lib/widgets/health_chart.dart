@@ -16,8 +16,8 @@ class HealthChart extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         SizedBox(
-          width: 420,
-          height: 420,
+          width: 340,
+          height: 340,
           child: Transform(
             alignment: Alignment.center,
             transform: Matrix4.rotationY(3.1416),
@@ -33,7 +33,7 @@ class HealthChart extends StatelessWidget {
           '건강 점수\n${score}점',
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 60,
+            fontSize: 40,
             fontWeight: FontWeight.w700,
             color: color,
           ),

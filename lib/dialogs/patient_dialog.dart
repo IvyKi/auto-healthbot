@@ -30,7 +30,7 @@ class _PatientLookupDialogState extends State<PatientLookupDialog> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: 300,
+              width: 400,
               child: TextField(
                 onChanged: (value) {
                   setState(() {
@@ -39,7 +39,7 @@ class _PatientLookupDialogState extends State<PatientLookupDialog> {
                 },
                 decoration: InputDecoration(
                   hintText: '고유번호를 입력하세요',
-                  hintStyle: TextStyle(fontSize: 20, color: Colors.grey[500]),
+                  hintStyle: TextStyle(fontSize: 36, color: Colors.grey[500]),
                   border: UnderlineInputBorder(),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black),
