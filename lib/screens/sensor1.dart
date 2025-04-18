@@ -31,7 +31,7 @@ class _Sensor1State extends State<Sensor1> {
         children: [
           Expanded(
             child: Image.asset(
-              'assets/images/finger.jpg',
+              'assets/images/finger.png',
               fit: BoxFit.cover,
             ),
           ),
