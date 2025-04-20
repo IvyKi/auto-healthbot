@@ -3,17 +3,43 @@ import 'package:auto_healthbot/theme/app_color.dart';
 import 'package:auto_healthbot/widgets/health_chart.dart';
 import 'package:auto_healthbot/widgets/record_card.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'home_screen.dart';
 
-class HealthScreen extends StatelessWidget {
+class HealthScreen extends StatefulWidget {
   final String patientId;
 
   const HealthScreen({required this.patientId, super.key});
 
   @override
+  State<HealthScreen> createState() => _HealthScreenState();
+}
+
+class _HealthScreenState extends State<HealthScreen> {
+  String patientName = '';
+  String patientGender = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPatientInfo();
+  }
+
+  Future<void> _fetchPatientInfo() async {
+    final ref = FirebaseDatabase.instance.ref('Patient/${widget.patientId}');
+    final snapshot = await ref.get();
+
+    if (snapshot.exists) {
+      final data = Map<String, dynamic>.from(snapshot.value as Map);
+      setState(() {
+        patientName = data['name'] ?? '';
+        patientGender = data['gender'] ?? '';
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final records = _getMockRecords();
-    final int latestScore = records.first['score'];
 
     return Scaffold(
       backgroundColor: ColorChart.back,
@@ -30,16 +56,40 @@ class HealthScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      if (patientName.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Text(
+                            '$patientName (${patientGender == "M" ? "남" : "여"})',
+                            style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                          ),
+                        ),
                       Expanded(
-                        child: Center(
-                          child: HealthChart(score: latestScore),
+                        child: StreamBuilder<DatabaseEvent>(
+                          stream: FirebaseDatabase.instance.ref('Health_Data').onValue,
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
+                              return Center(child: HealthChart(score: 0));
+                            }
+
+                            final rawData = Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map);
+                            final filtered = rawData.values
+                                .map((e) => Map<String, dynamic>.from(e))
+                                .where((e) => e['Patient_id'].toString() == widget.patientId)
+                                .toList();
+
+                            filtered.sort((a, b) => b['Timestamp'].compareTo(a['Timestamp']));
+
+                            final latestScore = filtered.isNotEmpty ? (filtered.first['Score'] ?? 0) : 0;
+
+                            return Center(child: HealthChart(score: latestScore));
+                          },
                         ),
                       ),
 
-
                       SizedBox(
                         width: 550,
-                        height: 160,
+                        height: 85,
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.push(
@@ -81,14 +131,32 @@ class HealthScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           padding: const EdgeInsets.all(20),
-                          child: ListView.builder(
-                            itemCount: records.length.clamp(0, 10),
-                            itemBuilder: (context, index) {
-                              final record = records[index];
-                              return RecordCard(
-                                date: record['date']!,
-                                score: record['score']!,
-                                issue: record['issue']!,
+                          // 👇 여기 StreamBuilder로 대체
+                          child: StreamBuilder<DatabaseEvent>(
+                            stream: FirebaseDatabase.instance.ref('Health_Data').onValue,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) return Text('에러 발생');
+                              if (!snapshot.hasData || snapshot.data!.snapshot.value == null)
+                                return Center(child: CircularProgressIndicator());
+
+                              final rawData = Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map);
+                              final filtered = rawData.values
+                                  .map((e) => Map<String, dynamic>.from(e))
+                                  .where((e) => e['Patient_id'].toString() == widget.patientId)
+                                  .toList();
+
+                              filtered.sort((a, b) => b['Timestamp'].compareTo(a['Timestamp']));
+
+                              return ListView.builder(
+                                itemCount: filtered.length.clamp(0, 10),
+                                itemBuilder: (context, index) {
+                                  final record = filtered[index];
+                                  return RecordCard(
+                                    date: _formatDate(record['Timestamp']),
+                                    score: record['Score'] ?? 0,
+                                    issue: _getHealthComment(record['Score'] ?? 0),
+                                  );
+                                },
                               );
                             },
                           ),
@@ -143,41 +211,16 @@ class HealthScreen extends StatelessWidget {
     );
   }
 
-
-
-
-  List<Map<String, dynamic>> _getMockRecords() {
-    return [
-      {
-        'date': '2025년 04월 17일',
-        'score': 90,
-        'issue': '전체적으로 건강해요',
-      },
-      {
-        'date': '2025년 04월 16일',
-        'score': 60,
-        'issue': '체온이 높아요',
-      },
-      {
-        'date': '2025년 04월 15일',
-        'score': 30,
-        'issue': '수면이 불안정해요',
-      },
-      {
-        'date': '2025년 04월 17일',
-        'score': 80,
-        'issue': '전체적으로 건강해요',
-      },
-      {
-        'date': '2025년 04월 16일',
-        'score': 60,
-        'issue': '체온이 높아요',
-      },
-      {
-        'date': '2025년 04월 15일',
-        'score': 30,
-        'issue': '수면이 불안정해요',
-      },
-    ];
+  String _formatDate(String iso) {
+    final dt = DateTime.parse(iso);
+    return '${dt.year}년 ${dt.month.toString().padLeft(2, '0')}월 ${dt.day.toString().padLeft(2, '0')}일';
   }
+
+  String _getHealthComment(int score) {
+    if (score >= 80) return '전체적으로 건강해요';
+    if (score >= 50) return '주의가 필요해요';
+    return '의료진 상담을 추천합니다';
+  }
+
+
 }
