@@ -4,6 +4,7 @@ import 'package:auto_healthbot/widgets/health_chart.dart';
 import 'package:auto_healthbot/widgets/record_card.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import '../dialogs/detailChart_dialog.dart';
 import 'home_screen.dart';
 
 class HealthScreen extends StatefulWidget {
@@ -169,7 +170,12 @@ class _HealthScreenState extends State<HealthScreen> {
                         width: 340,
                         height: 85,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (_) => DetailChartDialog(patientId: widget.patientId),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorChart.back,
                             foregroundColor: Colors.black,
@@ -221,6 +227,4 @@ class _HealthScreenState extends State<HealthScreen> {
     if (score >= 50) return '주의가 필요해요';
     return '의료진 상담을 추천합니다';
   }
-
-
 }
