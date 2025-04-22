@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "839822585943",
+    "firebase_url": "https://auto-healthbot-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "auto-healthbot",
+    "storage_bucket": "auto-healthbot.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:839822585943:android:37495748dbd1d4b8c3b312",
+        "android_client_info": {
+          "package_name": "com.example.auto_healthbot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1imjIDJmnSj1b6KQbee6HkiXYcGMm_gc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
