@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../services/patient_service.dart';
 import '../widgets/bottom_menu.dart';
+import 'map_screen.dart';
 import 'splash_screen.dart';
 import 'package:auto_healthbot/theme/app_color.dart';
 
@@ -79,7 +80,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     labelBottom: '안내하기',
                     color: Gradients1.color3,
                     textColor: ColorChart.back,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MapScreen()),
+                      );
+                    },
                   ),
                 ],
               ),
