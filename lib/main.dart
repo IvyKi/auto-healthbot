@@ -12,8 +12,8 @@ void main() async{
     DeviceOrientation.landscapeRight,
   ]);
 
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
   runApp(MyApp());
 }
 

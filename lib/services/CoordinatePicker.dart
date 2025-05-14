@@ -8,43 +8,97 @@ class CoordinatePicker extends StatefulWidget {
 }
 
 class _CoordinatePickerState extends State<CoordinatePicker> {
-  final List<Offset> _points = [];
+  final List<Map<String, double>> _rectangles = [];
+  Offset? _startPoint;
 
-  void _addPoint(TapDownDetails details) {
-    final Offset localPos = details.localPosition;
+  void _handleTap(TapDownDetails details) {
+    final pos = details.localPosition;
 
     setState(() {
-      _points.add(localPos);
-    });
+      if (_startPoint == null) {
+        _startPoint = pos;
+      } else {
+        final left = _startPoint!.dx < pos.dx ? _startPoint!.dx : pos.dx;
+        final top = _startPoint!.dy < pos.dy ? _startPoint!.dy : pos.dy;
+        final right = _startPoint!.dx > pos.dx ? _startPoint!.dx : pos.dx;
+        final bottom = _startPoint!.dy > pos.dy ? _startPoint!.dy : pos.dy;
 
-    print('좌표 저장됨: x=${localPos.dx.toStringAsFixed(2)}, y=${localPos.dy.toStringAsFixed(2)}');
+        _rectangles.add({
+          'left': left,
+          'top': top,
+          'right': right,
+          'bottom': bottom,
+          'width': right - left,
+          'height': bottom - top,
+        });
+
+        print('room_${_rectangles.length - 1}: '
+            '{left: $left, top: $top, width: ${right - left}, height: ${bottom - top}}');
+
+        _startPoint = null;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('좌표 수집 도구'),
+        title: const Text('사각형 좌표 수집기'),
         backgroundColor: Colors.black,
       ),
       body: Center(
         child: GestureDetector(
-          onTapDown: _addPoint,
+          onTapDown: _handleTap,
           child: Stack(
             children: [
               Image.asset("assets/images/floor.png"),
-              ..._points.map((point) => Positioned(
-                left: point.dx - 5,
-                top: point.dy - 5,
-                child: Container(
-                  width: 10,
-                  height: 10,
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
+              // 사각형 + 텍스트 렌더링
+              ..._rectangles.asMap().entries.map((entry) {
+                int index = entry.key;
+                Map<String, double> rect = entry.value;
+                return Stack(
+                  children: [
+                    Positioned(
+                      left: rect['left'],
+                      top: rect['top'],
+                      width: rect['width'],
+                      height: rect['height'],
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.red, width: 2),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: rect['left']! + 4,
+                      top: rect['top']! + 4,
+                      child: Text(
+                        'room_${index + 1}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                          backgroundColor: Colors.white70,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+              if (_startPoint != null)
+                Positioned(
+                  left: _startPoint!.dx - 5,
+                  top: _startPoint!.dy - 5,
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration: const BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ),
-              )),
             ],
           ),
         ),
@@ -53,9 +107,9 @@ class _CoordinatePickerState extends State<CoordinatePicker> {
         backgroundColor: Colors.black,
         child: const Icon(Icons.list),
         onPressed: () {
-          for (var i = 0; i < _points.length; i++) {
-            final p = _points[i];
-            print('room_$i: {left: ${p.dx.toStringAsFixed(2)}, top: ${p.dy.toStringAsFixed(2)}}');
+          for (var i = 0; i < _rectangles.length; i++) {
+            final r = _rectangles[i];
+            print('room_${i + 1}: {left: ${r['left']}, top: ${r['top']}, width: ${r['width']}, height: ${r['height']}}');
           }
         },
       ),
