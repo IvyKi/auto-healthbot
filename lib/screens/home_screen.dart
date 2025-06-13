@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 10),
 
               // 하단 바 메뉴
-              BottomMenu(),
+              // BottomMenu(),
             ],
           ),
         ),

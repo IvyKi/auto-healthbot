@@ -1,8 +1,55 @@
+import 'package:auto_healthbot/dialogs/destination_dialog.dart';
 import 'package:flutter/material.dart';
+import '../models/room_box.dart';
+import '../services/room_data_loader.dart';
 import '../theme/app_color.dart';
 
-class MapScreen extends StatelessWidget {
+class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
+
+  @override
+  State<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
+  List<RoomBox> _roomBoxes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadRoomBoxes().then((value) {
+      setState(() {
+        _roomBoxes = value;
+      });
+    });
+  }
+
+  void _handleTap(BuildContext context, TapDownDetails details, double width, double height) {
+    final dxRatio = details.localPosition.dx / width;
+    final dyRatio = details.localPosition.dy / height;
+
+    for (final box in _roomBoxes) {
+      if (box.contains(dxRatio, dyRatio)) {
+        _showConfirmDialog(context, box.room);
+        break;
+      }
+    }
+  }
+
+  void _showConfirmDialog(BuildContext context, String room) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.6),
+      builder: (context) => DestinationConfirmDialog(
+          room: room,
+          onConfirm: () {
+            Navigator.pushNamed(context, "/navigation");
+          }
+      )
+    );
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,25 +90,18 @@ class MapScreen extends StatelessWidget {
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final maxWidth = constraints.maxWidth;
-              final maxHeight = constraints.maxHeight;
-
               return GestureDetector(
-                onTapDown: (details) {
-                  final localPosition = details.localPosition;
-                  final dxRatio = localPosition.dx / maxWidth;
-                  final dyRatio = localPosition.dy / maxHeight;
-
-                  print("터치 비율: dx = ${dxRatio.toStringAsFixed(4)}, dy = ${dyRatio.toStringAsFixed(4)}");
-
-                  // → 다음 단계에서 이 비율 좌표와 터치박스 좌표 리스트 비교
-                },
+                onTapDown: (details) =>
+                    _handleTap(context, details, constraints.maxWidth, constraints.maxHeight),
                 child: Stack(
                   children: [
                     SizedBox(
-                      width: maxWidth,
-                      height: maxHeight,
-                      child: Image.asset("assets/images/floor.png", fit: BoxFit.contain),
+                      width: constraints.maxWidth,
+                      height: constraints.maxHeight,
+                      child: Image.asset(
+                        "assets/images/floor.png",
+                        fit: BoxFit.contain,
+                      ),
                     ),
                     // 이후 마커 및 터치박스 표시 추가
                   ],
