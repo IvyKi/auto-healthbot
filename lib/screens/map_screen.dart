@@ -34,21 +34,42 @@ class MapScreen extends StatelessWidget {
           margin: const EdgeInsets.all(20),
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: ColorChart.back,
             border: Border.all(
-              color: Gradients1.color3, // 연한 녹색 테두리
-              width: 5,
+              color: Gradients1.color3,
+              width: 3,
             ),
-            borderRadius: BorderRadius.circular(40),
+            borderRadius: BorderRadius.circular(24),
           ),
-          child: Stack(
-            children: [
-              Image.asset("assets/images/floor.png"),
-              // ... 목적지 핀 Positioned 등 추가 ...
-            ],
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final maxWidth = constraints.maxWidth;
+              final maxHeight = constraints.maxHeight;
+
+              return GestureDetector(
+                onTapDown: (details) {
+                  final localPosition = details.localPosition;
+                  final dxRatio = localPosition.dx / maxWidth;
+                  final dyRatio = localPosition.dy / maxHeight;
+
+                  print("터치 비율: dx = ${dxRatio.toStringAsFixed(4)}, dy = ${dyRatio.toStringAsFixed(4)}");
+
+                  // → 다음 단계에서 이 비율 좌표와 터치박스 좌표 리스트 비교
+                },
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      width: maxWidth,
+                      height: maxHeight,
+                      child: Image.asset("assets/images/floor.png", fit: BoxFit.contain),
+                    ),
+                    // 이후 마커 및 터치박스 표시 추가
+                  ],
+                ),
+              );
+            },
           ),
-        )
-        ,
+        ),
       )
     );
   }

@@ -31,8 +31,8 @@ class MyApp extends StatelessWidget {
             titleLarge: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-      // home: SplashScreen(),
-      home: CoordinatePicker()
+      home: SplashScreen(),
+      // home: CoordinatePicker()
     );
   }
 }
