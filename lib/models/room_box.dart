@@ -4,6 +4,8 @@ class RoomBox {
   final double top;
   final double width;
   final double height;
+  final double x;
+  final double y;
 
   RoomBox({
     required this.room,
@@ -11,6 +13,8 @@ class RoomBox {
     required this.top,
     required this.width,
     required this.height,
+    required this.x,
+    required this.y,
   });
 
   factory RoomBox.fromJson(Map<String, dynamic> json) {
@@ -20,6 +24,8 @@ class RoomBox {
       top: double.parse(json['top']),
       width: double.parse(json['width']),
       height: double.parse(json['height']),
+      x: double.parse(json['x']),
+      y: double.parse(json['y']),
     );
   }
 

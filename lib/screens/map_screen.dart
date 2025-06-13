@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:auto_healthbot/dialogs/destination_dialog.dart';
+import 'package:auto_healthbot/screens/robot_moving1.dart';
 import 'package:flutter/material.dart';
 import '../models/room_box.dart';
+import '../services/mqtt_service.dart';
 import '../services/room_data_loader.dart';
 import '../theme/app_color.dart';
 
@@ -30,21 +34,43 @@ class _MapScreenState extends State<MapScreen> {
 
     for (final box in _roomBoxes) {
       if (box.contains(dxRatio, dyRatio)) {
-        _showConfirmDialog(context, box.room);
+        _showConfirmDialog(context, box);
         break;
       }
     }
   }
 
-  void _showConfirmDialog(BuildContext context, String room) {
+  void _showConfirmDialog(BuildContext context, RoomBox box) {
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.6),
       builder: (context) => DestinationConfirmDialog(
-          room: room,
-          onConfirm: () {
-            Navigator.pushNamed(context, "/navigation");
-          }
+          room:box.room,
+        onConfirm: () async {
+          // MQTT 전송
+          final mqtt = MqttService();
+          await mqtt.connect();
+
+          final message = {
+            "room": box.room,
+            "x": box.x,
+            "y": box.y
+          };
+
+          mqtt.publishMessage(
+            'robot/target', // 라즈베리파이에서 이 토픽으로 subscribe 해야 함
+            jsonEncode(message),
+          );
+
+          // (선택) 다음 안내 중 화면으로 이동
+          Future.microtask(() {
+            if (!context.mounted) return; // Flutter 3.7+ 이상에서 유용
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const RobotMoving1()),
+            );
+          });
+        },
       )
     );
   }

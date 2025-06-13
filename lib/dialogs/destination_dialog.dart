@@ -61,7 +61,9 @@ class DestinationConfirmDialog extends StatelessWidget {
                     text: '예',
                     onPressed: () {
                       Navigator.of(context).pop();
-                      onConfirm();
+                      Future.delayed(const Duration(milliseconds: 100), () {
+                        onConfirm(); // 이제 화면 전환 잘 됨
+                      });
                     },
                   ),
                 ],
