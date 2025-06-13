@@ -5,7 +5,7 @@ class MqttService {
   late MqttServerClient client;
 
   Future<void> connect() async {
-    client = MqttServerClient('broker.hivemq.com', 'flutter_client'); // 임시 공개 브로커
+    client = MqttServerClient('192.168.127.239', 'flutter_client'); // 임시 공개 브로커
     client.port = 1883;
     client.logging(on: true);
     client.keepAlivePeriod = 20;
