@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:auto_healthbot/screens/home_screen.dart';
+import 'dart:convert';
 import 'package:auto_healthbot/screens/robot_moving2.dart';
 import 'package:auto_healthbot/theme/app_color.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 
-import '../main.dart';
+import '../services/mqtt_service.dart';
+
 
 class RobotMoving1 extends StatefulWidget {
   const RobotMoving1({super.key});
@@ -15,20 +15,36 @@ class RobotMoving1 extends StatefulWidget {
 }
 
 class _RobotMoving1State extends State<RobotMoving1> {
+  late MqttService mqtt;
+
   @override
   void initState() {
     super.initState();
-    // 3초 후 HealthScreen으로 이동 (측정 완료 가정)
-    Future.delayed(const Duration(seconds: 5), () {
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => RobotMoving2(),
-        ),
-      );
+
+    mqtt = MqttService();
+    mqtt.connect().then((_) {
+      mqtt.subscribeToArrivedTopic((message) {
+        try {
+          final decoded = jsonDecode(message);
+          if (decoded["status"] == "arrived") {
+            if (!mounted) return;
+            Navigator.pushReplacementNamed(context, '/arrived');
+          }
+        } catch (e) {
+          print("📛 메시지 파싱 오류: $e");
+        }
+      });
+    }).catchError((e) {
+      print("❌ MQTT 연결 중 오류 발생: $e");
     });
   }
+
+  @override
+  void dispose() {
+    mqtt.disconnect();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+import 'package:auto_healthbot/screens/robot_moving1.dart';
+import 'package:auto_healthbot/screens/robot_moving2.dart';
 import 'package:auto_healthbot/services/CoordinatePicker.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,11 @@ class MyApp extends StatelessWidget {
           ),
         ),
       home: SplashScreen(),
+      routes: {
+        '/moving': (_) => RobotMoving1(),
+        '/arrived': (_) => RobotMoving2(),
+      },
+
       // home: CoordinatePicker()
     );
   }

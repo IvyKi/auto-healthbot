@@ -33,6 +33,21 @@ class MqttService {
     print('📤 메시지 전송: [$topic] $message');
   }
 
+  void subscribeToArrivedTopic(Function(String message) onMessage) {
+    if (client.connectionStatus?.state == MqttConnectionState.connected) {
+      client.subscribe('robot/arrived', MqttQos.atMostOnce);
+
+      client.updates?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+        final recMess = c?[0].payload as MqttPublishMessage;
+        final payload =
+        MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+
+        onMessage(payload);
+      });
+    }
+  }
+
+
   void disconnect() {
     client.disconnect();
     print('🔌 MQTT 연결 종료됨');
@@ -42,3 +57,5 @@ class MqttService {
     print('⚠️ 연결 끊김!');
   }
 }
+
+

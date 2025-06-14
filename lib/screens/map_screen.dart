@@ -40,6 +40,7 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  /*
   void _showConfirmDialog(BuildContext context, RoomBox box) {
     showDialog(
       context: context,
@@ -74,6 +75,33 @@ class _MapScreenState extends State<MapScreen> {
       )
     );
   }
+   */
+  void _showConfirmDialog(BuildContext context, RoomBox box) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.6),
+      builder: (context) => DestinationConfirmDialog(
+        room: box.room,
+        onConfirm: () async {
+          Navigator.of(context).pop();
+
+          // ✅ 먼저 이동 중 화면으로 전환
+          Navigator.pushNamed(context, '/moving');
+
+          // ✅ 비동기적으로 MQTT 메시지 전송
+          final mqtt = MqttService();
+          await mqtt.connect();
+          final message = {
+            "room": box.room,
+            "x": box.x,
+            "y": box.y,
+          };
+          mqtt.publishMessage('robot/target', jsonEncode(message));
+        },
+      ),
+    );
+  }
+
 
 
 
