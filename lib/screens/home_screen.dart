@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _resetInactivityTimer() {
     _inactivityTimer?.cancel();
-    _inactivityTimer = Timer(Duration(seconds: 30), _goToSplashScreen);
+    _inactivityTimer = Timer(Duration(seconds: 60), _goToSplashScreen);
   }
 
   void _goToSplashScreen() {

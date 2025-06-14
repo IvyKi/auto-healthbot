@@ -96,7 +96,7 @@ class _MapScreenState extends State<MapScreen> {
             "x": box.x,
             "y": box.y,
           };
-          mqtt.publishMessage('robot/target', jsonEncode(message));
+          await mqtt.publishMessage('robot/target', jsonEncode(message));
         },
       ),
     );
