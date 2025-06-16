@@ -5,7 +5,6 @@ import 'package:auto_healthbot/widgets/home_button.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../services/patient_service.dart';
-import '../widgets/bottom_menu.dart';
 import 'map_screen.dart';
 import 'splash_screen.dart';
 import 'package:auto_healthbot/theme/app_color.dart';

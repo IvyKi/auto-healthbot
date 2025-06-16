@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:auto_healthbot/dialogs/destination_dialog.dart';
-import 'package:auto_healthbot/screens/robot_moving1.dart';
+//import 'package:auto_healthbot/screens/robot_moving1.dart';
 import 'package:flutter/material.dart';
 import '../models/room_box.dart';
 import '../services/mqtt_service.dart';

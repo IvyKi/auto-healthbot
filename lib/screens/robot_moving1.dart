@@ -1,6 +1,6 @@
-import 'dart:async';
+
 import 'dart:convert';
-import 'package:auto_healthbot/screens/robot_moving2.dart';
+// import 'package:auto_healthbot/screens/robot_moving2.dart';
 import 'package:auto_healthbot/theme/app_color.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +16,18 @@ class RobotMoving1 extends StatefulWidget {
 
 class _RobotMoving1State extends State<RobotMoving1> {
   late MqttService mqtt;
+
+  // @override
+  // void initState(){
+  //   super.initState();
+  //
+  //   Future.delayed(Duration(seconds: 5), (){
+  //     if (mounted){
+  //       Navigator.pushReplacementNamed(context, '/arrived');
+  //     }
+  //   });
+  // }
+
 
   @override
   void initState() {
@@ -44,6 +56,7 @@ class _RobotMoving1State extends State<RobotMoving1> {
     mqtt.disconnect();
     super.dispose();
   }
+
 
 
   @override
