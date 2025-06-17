@@ -58,44 +58,46 @@ class _PatientLookupDialogState extends State<PatientLookupDialog> {
       ),
       content: SizedBox(
         width: 580,
-        height: 320,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 400,
-              child: TextField(
-                onChanged: (value) {
-                  setState(() {
-                    _input = value;
-                    _errorMessage = null; // 입력 바뀌면 에러 메시지 제거
-                  });
-                },
-                decoration: InputDecoration(
-                  hintText: '고유번호를 입력하세요',
-                  hintStyle: TextStyle(fontSize: 36, color: Colors.grey[500]),
-                  border: UnderlineInputBorder(),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
+        // height: 320,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 400,
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      _input = value;
+                      _errorMessage = null; // 입력 바뀌면 에러 메시지 제거
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: '고유번호를 입력하세요',
+                    hintStyle: TextStyle(fontSize: 36, color: Colors.grey[500]),
+                    border: UnderlineInputBorder(),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                    ),
                   ),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 36),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(8),
+                  ],
                 ),
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 36),
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(8),
-                ],
               ),
-            ),
-            if (_errorMessage != null) ...[
-              SizedBox(height: 20),
-              Text(
-                _errorMessage!,
-                style: TextStyle(color: Colors.red[600], fontSize: 24),
-              ),
+              if (_errorMessage != null) ...[
+                SizedBox(height: 20),
+                Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Colors.red[600], fontSize: 24),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
       actions: [

@@ -22,6 +22,7 @@ plugins {
     // START: FlutterFire Configuration
     id("com.google.gms.google-services") version("4.3.15") apply false
 
+
 }
 
 include(":app")
