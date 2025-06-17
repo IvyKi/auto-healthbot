@@ -39,6 +39,7 @@ dependencies:
   firebase_database: ^10.3.5
   firebase_auth: ^4.0.0
   fl_chart: ^0.63.0
+  mqtt_client: ^10.0.0
 
 
 dev_dependencies:
@@ -71,6 +72,9 @@ flutter:
   assets:
     - assets/images/finger.png
     - assets/images/save.png
+    - assets/images/floor.png
+    - assets/images/robot.png
+    - assets/data/room_boxes.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

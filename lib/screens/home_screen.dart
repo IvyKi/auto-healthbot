@@ -5,7 +5,7 @@ import 'package:auto_healthbot/widgets/home_button.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../services/patient_service.dart';
-import '../widgets/bottom_menu.dart';
+import 'map_screen.dart';
 import 'splash_screen.dart';
 import 'package:auto_healthbot/theme/app_color.dart';
 
@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _resetInactivityTimer() {
     _inactivityTimer?.cancel();
-    _inactivityTimer = Timer(Duration(seconds: 30), _goToSplashScreen);
+    _inactivityTimer = Timer(Duration(seconds: 60), _goToSplashScreen);
   }
 
   void _goToSplashScreen() {
@@ -79,14 +79,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     labelBottom: '안내하기',
                     color: Gradients1.color3,
                     textColor: ColorChart.back,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MapScreen()),
+                      );
+                    },
                   ),
                 ],
               ),
               const SizedBox(height: 10),
 
               // 하단 바 메뉴
-              BottomMenu(),
+              // BottomMenu(),
             ],
           ),
         ),
