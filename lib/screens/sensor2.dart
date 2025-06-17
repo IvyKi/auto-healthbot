@@ -6,7 +6,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 
 class Sensor2 extends StatefulWidget {
-  const Sensor2({super.key});
+  final String patientId ;
+
+  const Sensor2({super.key, required this.patientId});
 
   @override
   State<Sensor2> createState() => _Sensor2State();
@@ -22,7 +24,7 @@ class _Sensor2State extends State<Sensor2> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => Sensor3(),
+          builder: (_) => Sensor3(patientId: widget.patientId),
         ),
       );
     });

@@ -95,7 +95,7 @@ class _HealthScreenState extends State<HealthScreen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => const Sensor1()),
+                              MaterialPageRoute(builder: (_) => Sensor1(patientId: widget.patientId)),
                             );
                           },
                           style: ElevatedButton.styleFrom(

@@ -4,7 +4,9 @@ import 'package:auto_healthbot/theme/app_color.dart';
 import 'package:flutter/material.dart';
 
 class Sensor3 extends StatefulWidget {
-  const Sensor3({super.key});
+  final String patientId;
+
+  const Sensor3({super.key, required this.patientId});
 
 
   @override
@@ -21,7 +23,7 @@ class _Sensor3State extends State<Sensor3> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => const HealthScreen(patientId: '12345678'),
+          builder: (_) => HealthScreen(patientId: widget.patientId),
         ),
       );
     });
