@@ -3,6 +3,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 
 class MqttService {
   late MqttServerClient client;
+  bool _isListening = false;
 
   Future<void> connect() async {
     // client = MqttServerClient('172.20.10.5', 'flutter_client'); // 임시 공개 브로커
@@ -10,12 +11,15 @@ class MqttService {
     // client.logging(on: true);
     // client.keepAlivePeriod = 120;
     // client.onDisconnected = onDisconnected;
+    // ros: 172.20.10.5
+    // test pi: 192.168.127.239
     final clientId = 'flutter_client_${DateTime.now().millisecondsSinceEpoch}';
-    client = MqttServerClient('172.20.10.5', clientId);
+    client = MqttServerClient('192.168.127.239', clientId);
     client.port = 1883;
     client.logging(on: true);
     client.keepAlivePeriod = 120;
     client.onDisconnected = onDisconnected;
+
 
 
     final connMessage = MqttConnectMessage()
@@ -55,9 +59,9 @@ class MqttService {
     print('📤 메시지 전송: [$topic] $message');
 
     // 네트워크 상황에 따라 메시지가 브로커에 안전하게 전송되도록 약간의 대기 추가
-    await Future.delayed(Duration(milliseconds: 2000));
-
-    disconnect();
+    // await Future.delayed(Duration(milliseconds: 2000));
+    //
+    // disconnect();
   }
 
 
@@ -81,16 +85,22 @@ class MqttService {
   void subscribeToTopic(String topic, Function(String message) onMessage) {
     if (client.connectionStatus?.state == MqttConnectionState.connected) {
       client.subscribe(topic, MqttQos.atMostOnce);
-      client.updates?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-        final recMess = c?[0].payload as MqttPublishMessage;
-        final payload =
-        MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-        final receivedTopic = c?[0].topic;
 
-        if (receivedTopic == topic) {
-          onMessage(payload);
-        }
-      });
+      if (!_isListening) {
+        _isListening = true;
+        client.updates?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+          final recMess = c?[0].payload as MqttPublishMessage;
+          final payload =
+          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+          final receivedTopic = c?[0].topic;
+
+          print('📥 MQTT 수신됨 - [$receivedTopic] $payload');
+
+          if (receivedTopic == topic) {
+            onMessage(payload);
+          }
+        });
+      }
     } else {
       print('⚠️ MQTT 연결 안됨: $topic 구독 실패');
     }
