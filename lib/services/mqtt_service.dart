@@ -77,6 +77,27 @@ class MqttService {
   }
 
 
+
+  void subscribeToTopic(String topic, Function(String message) onMessage) {
+    if (client.connectionStatus?.state == MqttConnectionState.connected) {
+      client.subscribe(topic, MqttQos.atMostOnce);
+      client.updates?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+        final recMess = c?[0].payload as MqttPublishMessage;
+        final payload =
+        MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+        final receivedTopic = c?[0].topic;
+
+        if (receivedTopic == topic) {
+          onMessage(payload);
+        }
+      });
+    } else {
+      print('⚠️ MQTT 연결 안됨: $topic 구독 실패');
+    }
+  }
+
+
+
   void disconnect() async {
     if (client.connectionStatus?.state == MqttConnectionState.connected) {
       await Future.delayed(Duration(milliseconds: 500)); // publish 이후 안전 대기

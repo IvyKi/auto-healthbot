@@ -5,6 +5,7 @@ import 'package:auto_healthbot/widgets/record_card.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../dialogs/detailChart_dialog.dart';
+import '../services/mqtt_service.dart';
 import 'home_screen.dart';
 
 class HealthScreen extends StatefulWidget {
@@ -19,11 +20,32 @@ class HealthScreen extends StatefulWidget {
 class _HealthScreenState extends State<HealthScreen> {
   String patientName = '';
   String patientGender = '';
+  late MqttService mqtt;
 
   @override
   void initState() {
     super.initState();
     _fetchPatientInfo();
+
+    mqtt = MqttService();
+    mqtt.connect().then((_) {
+      print('✅ MQTT 연결됨 (health_screen)');
+
+      mqtt.subscribeToTopic('sensor/ready', (msg) {
+        print('📥 sensor/ready 수신: $msg');
+        if (!mounted) return;
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => Sensor1(patientId: widget.patientId),
+          ),
+        );
+      });
+    }).catchError((e) {
+      print('❌ MQTT 연결 실패: $e');
+    });
+
   }
 
   Future<void> _fetchPatientInfo() async {
@@ -38,6 +60,16 @@ class _HealthScreenState extends State<HealthScreen> {
       });
     }
   }
+
+  void _startMeasurement() async {
+    await mqtt.publishMessage('sensor/start', 'start'); // 🟢 센서 시작 신호
+    print('📤 sensor/start 메시지 전송 완료');
+    // 화면 전환은 아직 하지 않음
+  }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -92,12 +124,13 @@ class _HealthScreenState extends State<HealthScreen> {
                         width: 550,
                         height: 85,
                         child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => Sensor1(patientId: widget.patientId)),
-                            );
-                          },
+                          onPressed: _startMeasurement,
+                          // () {
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(builder: (_) => Sensor1(patientId: widget.patientId)),
+                          //   );
+                          // },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorChart.blue,
                             shape: RoundedRectangleBorder(
