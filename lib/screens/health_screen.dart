@@ -113,7 +113,8 @@ class _HealthScreenState extends State<HealthScreen> {
 
                             filtered.sort((a, b) => b['Timestamp'].compareTo(a['Timestamp']));
 
-                            final latestScore = filtered.isNotEmpty ? (filtered.first['Score'] ?? 0) : 0;
+                            final latestScoreRaw = filtered.isNotEmpty ? (filtered.first['Score'] ?? 0) : 0;
+                            int latestScore = (latestScoreRaw is int) ? latestScoreRaw : (latestScoreRaw as num).toInt();
 
                             return Center(child: HealthChart(score: latestScore));
                           },
@@ -185,10 +186,13 @@ class _HealthScreenState extends State<HealthScreen> {
                                 itemCount: filtered.length.clamp(0, 10),
                                 itemBuilder: (context, index) {
                                   final record = filtered[index];
+                                  final rawScore = record['Score'] ?? 0;
+                                  int scoreInt = (rawScore is int) ? rawScore : (rawScore as num).toInt();
+
                                   return RecordCard(
                                     date: _formatDate(record['Timestamp']),
-                                    score: record['Score'] ?? 0,
-                                    issue: _getHealthComment(record['Score'] ?? 0),
+                                    score: scoreInt,
+                                    issue: _getHealthComment(scoreInt),
                                   );
                                 },
                               );
