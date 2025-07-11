@@ -255,9 +255,10 @@ class _HealthScreenState extends State<HealthScreen> {
     return '${dt.year}년 ${dt.month.toString().padLeft(2, '0')}월 ${dt.day.toString().padLeft(2, '0')}일';
   }
 
-  String _getHealthComment(int score) {
-    if (score >= 80) return '전체적으로 건강해요';
-    if (score >= 50) return '주의가 필요해요';
+  String _getHealthComment(num score) {
+    final intScore = score.toInt();
+    if (intScore >= 80) return '전체적으로 건강해요';
+    if (intScore >= 50) return '주의가 필요해요';
     return '의료진 상담을 추천합니다';
   }
 }
