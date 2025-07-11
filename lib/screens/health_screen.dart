@@ -105,11 +105,32 @@ class _HealthScreenState extends State<HealthScreen> {
                               return Center(child: HealthChart(score: 0));
                             }
 
-                            final rawData = Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map);
-                            final filtered = rawData.values
-                                .map((e) => Map<String, dynamic>.from(e))
-                                .where((e) => e['Patient_id'].toString() == widget.patientId)
-                                .toList();
+                            // final rawData = Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map);
+                            // final filtered = rawData.values
+                            //     .map((e) => Map<String, dynamic>.from(e))
+                            //     .where((e) => e['Patient_id'].toString() == widget.patientId)
+                            //     .toList();
+
+                            final dynamic value = snapshot.data!.snapshot.value;
+
+                            List<Map<String, dynamic>> filtered = [];
+
+                            if (value is Map) {
+                              // Firebase에서 Map(딕셔너리) 구조로 내려온 경우
+                              filtered = value.values
+                                  .map((e) => Map<String, dynamic>.from(e as Map))
+                                  .where((e) => e['Patient_id'].toString() == widget.patientId)
+                                  .toList();
+                            } else if (value is List) {
+                              // Firebase에서 List(배열)로 내려온 경우
+                              filtered = value
+                                  .where((e) => e != null)
+                                  .map((e) => Map<String, dynamic>.from(e as Map))
+                                  .where((e) => e['Patient_id'].toString() == widget.patientId)
+                                  .toList();
+                            } else {
+                              filtered = [];
+                            }
 
                             filtered.sort((a, b) => b['Timestamp'].compareTo(a['Timestamp']));
 
@@ -173,11 +194,31 @@ class _HealthScreenState extends State<HealthScreen> {
                               if (!snapshot.hasData || snapshot.data!.snapshot.value == null)
                                 return Center(child: CircularProgressIndicator());
 
-                              final rawData = Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map);
-                              final filtered = rawData.values
-                                  .map((e) => Map<String, dynamic>.from(e))
-                                  .where((e) => e['Patient_id'].toString() == widget.patientId)
-                                  .toList();
+                              // final rawData = Map<String, dynamic>.from(snapshot.data!.snapshot.value as Map);
+                              // final filtered = rawData.values
+                              //     .map((e) => Map<String, dynamic>.from(e))
+                              //     .where((e) => e['Patient_id'].toString() == widget.patientId)
+                              //     .toList();
+
+                              final dynamic value = snapshot.data!.snapshot.value;
+                              List<Map<String, dynamic>> filtered = [];
+
+                              if (value is Map) {
+                                filtered = value.values
+                                    .map((e) => Map<String, dynamic>.from(e as Map))
+                                    .where((e) => e['Patient_id'].toString() == widget.patientId)
+                                    .toList();
+                              } else if (value is List) {
+                                filtered = value
+                                    .where((e) => e != null)
+                                    .map((e) => Map<String, dynamic>.from(e as Map))
+                                    .where((e) => e['Patient_id'].toString() == widget.patientId)
+                                    .toList();
+                              } else {
+                                filtered = [];
+                              }
+
+
 
                               filtered.sort((a, b) => b['Timestamp'].compareTo(a['Timestamp']));
 
@@ -188,7 +229,7 @@ class _HealthScreenState extends State<HealthScreen> {
                                   return RecordCard(
                                     date: _formatDate(record['Timestamp']),
                                     score: record['Score'] ?? 0,
-                                    issue: _getHealthComment(record['Score'] ?? 0),
+                                    issue: _getHealthComment((record['Score'] ?? 0).toInt()),
                                   );
                                 },
                               );
