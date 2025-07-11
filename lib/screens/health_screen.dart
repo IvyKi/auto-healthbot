@@ -221,7 +221,11 @@ class _HealthScreenState extends State<HealthScreen> {
 
 
 
-                              filtered.sort((a, b) => b['Timestamp'].compareTo(a['Timestamp']));
+                              filtered.sort((a, b) {
+                                final dateA = DateTime.parse(a['Timestamp'].replaceFirst(' ', 'T'));
+                                final dateB = DateTime.parse(b['Timestamp'].replaceFirst(' ', 'T'));
+                                return dateB.compareTo(dateA); // 최신 → 오래된 순
+                              });
 
                               return ListView.builder(
                                 itemCount: filtered.length.clamp(0, 10),
