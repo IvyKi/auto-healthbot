@@ -13,8 +13,9 @@ class MqttService {
     // client.onDisconnected = onDisconnected;
     // ros: 172.20.10.5
     // test pi: 192.168.127.239
+    // sensor pi: 172.20.10.10
     final clientId = 'flutter_client_${DateTime.now().millisecondsSinceEpoch}';
-    client = MqttServerClient('172.20.10.5', clientId);
+    client = MqttServerClient('192.168.127.239', clientId);
     client.port = 1883;
     client.logging(on: true);
     client.keepAlivePeriod = 120;

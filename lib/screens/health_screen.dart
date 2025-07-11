@@ -134,7 +134,8 @@ class _HealthScreenState extends State<HealthScreen> {
 
                             filtered.sort((a, b) => b['Timestamp'].compareTo(a['Timestamp']));
 
-                            final latestScore = filtered.isNotEmpty ? (filtered.first['Score'] ?? 0) : 0;
+                            final latestScoreRaw = filtered.isNotEmpty ? (filtered.first['Score'] ?? 0) : 0;
+                            int latestScore = (latestScoreRaw is int) ? latestScoreRaw : (latestScoreRaw as num).toInt();
 
                             return Center(child: HealthChart(score: latestScore));
                           },
@@ -226,10 +227,13 @@ class _HealthScreenState extends State<HealthScreen> {
                                 itemCount: filtered.length.clamp(0, 10),
                                 itemBuilder: (context, index) {
                                   final record = filtered[index];
+                                  final rawScore = record['Score'] ?? 0;
+                                  int scoreInt = (rawScore is int) ? rawScore : (rawScore as num).toInt();
+
                                   return RecordCard(
                                     date: _formatDate(record['Timestamp']),
-                                    score: record['Score'] ?? 0,
-                                    issue: _getHealthComment((record['Score'] ?? 0).toInt()),
+                                    score: scoreInt,
+                                    issue: _getHealthComment(scoreInt),
                                   );
                                 },
                               );
@@ -296,9 +300,10 @@ class _HealthScreenState extends State<HealthScreen> {
     return '${dt.year}년 ${dt.month.toString().padLeft(2, '0')}월 ${dt.day.toString().padLeft(2, '0')}일';
   }
 
-  String _getHealthComment(int score) {
-    if (score >= 80) return '전체적으로 건강해요';
-    if (score >= 50) return '주의가 필요해요';
+  String _getHealthComment(num score) {
+    final intScore = score.toInt();
+    if (intScore >= 80) return '전체적으로 건강해요';
+    if (intScore >= 50) return '주의가 필요해요';
     return '의료진 상담을 추천합니다';
   }
 }

@@ -4,6 +4,7 @@ import 'package:auto_healthbot/screens/sensor3.dart';
 import 'package:auto_healthbot/theme/app_color.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
+import '../services/mqtt_service.dart';
 
 class Sensor2 extends StatefulWidget {
   final String patientId ;
@@ -15,19 +16,37 @@ class Sensor2 extends StatefulWidget {
 }
 
 class _Sensor2State extends State<Sensor2> {
+  late MqttService mqtt;
+
   @override
   void initState() {
     super.initState();
-    // 3초 후 HealthScreen으로 이동 (측정 완료 가정)
-    Future.delayed(const Duration(seconds: 5), () {
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => Sensor3(patientId: widget.patientId),
-        ),
-      );
+
+    mqtt = MqttService();
+    mqtt.connect().then((_) {
+      print('✅ MQTT 연결됨 (Sensor2)');
+
+      // sensor/done 토픽 구독
+      mqtt.subscribeToTopic('sensor/done', (msg) {
+        print('📥 sensor/done 수신: $msg');
+        if (!mounted) return;
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => Sensor3(patientId: widget.patientId),
+          ),
+        );
+      });
+    }).catchError((e) {
+      print('❌ MQTT 연결 실패: $e');
     });
+  }
+
+  @override
+  void dispose() {
+    mqtt.disconnect();
+    super.dispose();
   }
 
   @override

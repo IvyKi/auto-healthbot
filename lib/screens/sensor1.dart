@@ -20,9 +20,11 @@ class _Sensor1State extends State<Sensor1> {
   void initState() {
     super.initState();
 
+    print('✅ Sensor1 생성됨, patientId: ${widget.patientId}');  // 로그 찍기
+
     final mqtt = MqttService();
     mqtt.connect().then((_) async {
-      await mqtt.publishMessage('sensor/confirm', 'confirm:$widget.patientId');
+      await mqtt.publishMessage('sensor/confirm', 'confirm:${widget.patientId}');
       print('📤 sensor/confirm 메시지 전송 완료');
     });
 
